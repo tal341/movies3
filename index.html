@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Movie Tier List</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background: #000;
+    }
+    .tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
+    .tier {
+      flex: 1;
+      min-height: 100px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 5px;
+    }
+    .tier-label {
+      writing-mode: horizontal-tb;
+      margin-right: 10px;
+      font-weight: bold;
+      color: #fff;
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .tier-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .tier.SSS { background: linear-gradient(to right, #5a0000, #220000); }
+    .tier.SS  { background: linear-gradient(to right, #5a3b00, #221800); }
+    .tier.S   { background: linear-gradient(to right, #5a4f00, #221f00); }
+    .tier.Ap  { background: linear-gradient(to right, #004f3b, #001f18); }
+    .tier.B   { background: linear-gradient(to right, #003b5a, #001822); }
+    .tier.C   { background: linear-gradient(to right, #3b005a, #180022); }
+
+    .poster {
+      width: 120px;
+      height: auto;
+      margin: 0;
+      cursor: grab;
+    }
+
+    #unranked-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px;
+      border-top: 2px solid #333;
+    }
+    #unranked-label {
+      text-align: center;
+      padding: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Movie Tier List</h1>
+  </header>
+  <div class="tier-list">
+    <div class="tier SSS" data-tier="SSS">
+      <div class="tier-label">SSS</div>
+      <div class="tier-content"></div>
+    </div>
+    <div class="tier SS" data-tier="SS">
+      <div class="tier-label">SS</div>
+      <div class="tier-content"></div>
+    </div>
+    <div class="tier S" data-tier="S">
+      <div class="tier-label">S</div>
+      <div class="tier-content"></div>
+    </div>
+    <div class="tier Ap" data-tier="A+">
+      <div class="tier-label">A+</div>
+      <div class="tier-content"></div>
+    </div>
+    <div class="tier B" data-tier="B">
+      <div class="tier-label">B</div>
+      <div class="tier-content"></div>
+    </div>
+    <div class="tier C" data-tier="C">
+      <div class="tier-label">C</div>
+      <div class="tier-content"></div>
+    </div>
+  </div>
+
+  <div id="unranked-label">🎬 Movies</div>
+  <div id="unranked-area"></div>
+
+  <input type="file" id="fileInput" multiple accept="image/*">
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const unranked = document.getElementById('unranked-area');
+
+    fileInput.addEventListener('change', (event) => {
+      const files = event.target.files;
+      for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.classList.add('poster');
+          img.draggable = true;
+          img.addEventListener('dragstart', dragStart);
+          unranked.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function dragStart(e) {
+      e.dataTransfer.setData('text/plain', e.target.src);
+    }
+
+    const tierContents = document.querySelectorAll('.tier-content');
+    tierContents.forEach(content => {
+      content.addEventListener('dragover', (e) => e.preventDefault());
+      content.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const src = e.dataTransfer.getData('text/plain');
+        // ✅ תיקון חשוב: מחפש את התמונה גם בתוך Tier וגם במאגר
+        let img = document.querySelector(`.tier-content img[src='${src}']`) || 
+                  document.querySelector(`#unranked-area img[src='${src}']`);
+        if (img) content.appendChild(img);
+      });
+    });
+
+    unranked.addEventListener('dragover', (e) => e.preventDefault());
+    unranked.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const src = e.dataTransfer.getData('text/plain');
+      // ✅ אותו תיקון כאן
+      let img = document.querySelector(`.tier-content img[src='${src}']`) || 
+                document.querySelector(`#unranked-area img[src='${src}']`);
+      if (img) unranked.appendChild(img);
+    });
+  </script>
+</body>
+</html>
