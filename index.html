@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>🎬 My Movie Tier List</title>
-  <!-- ✅ SEO - שלב 2 כבר כאן! -->
-  <meta name="description" content="צור Tier List אישי לסרטים שלך! גרור סרטים לדירוג SSS עד C, שמור כתמונה ושתף עם חברים.">
+  <meta name="description" content="צור Tier List אישי לסרטים שלך! הקלד שם סרט, גרור לדירוג SSS עד C, שמור כתמונה ושתף עם חברים.">
   <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע">
   <meta name="author" content="טל">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ חשוב למובייל -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -191,6 +190,30 @@
       backdrop-filter: blur(3px);
     }
 
+    /* שדה הזנת סרט */
+    #movieInput {
+      display: block;
+      margin: 20px auto;
+      padding: 14px 20px;
+      width: 80%;
+      max-width: 400px;
+      background: rgba(30,30,30,0.8);
+      color: white;
+      border: 2px solid rgba(100,100,100,0.5);
+      border-radius: 12px;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      backdrop-filter: blur(3px);
+      transition: all 0.2s;
+    }
+
+    #movieInput:focus {
+      border-color: rgba(200,200,200,0.8);
+      background: rgba(40,40,40,0.9);
+      transform: translateY(-2px);
+    }
+
     input[type="file"],
     .download-btn,
     .reset-btn {
@@ -314,19 +337,52 @@
   <div id="unranked-label">🎬 Movies</div>
   <div id="unranked-area"></div>
 
+  <!-- ✅ שדה טקסט להוספת סרט לפי שם -->
+  <input type="text" id="movieInput" placeholder="🎬 Enter movie name (e.g. Inception) and press Enter">
+
+  <!-- ✅ עדיין משאירים אפשרות להעלאת תמונות ידניות -->
   <input type="file" id="fileInput" multiple accept="image/*">
 
-  <!-- ✅ כפתור הורדה -->
   <button id="downloadBtn" class="download-btn">💾 Save as Image</button>
-
-  <!-- ✅ כפתור Reset -->
   <button id="resetBtn" class="reset-btn">🔄 Reset All</button>
 
   <script>
     const fileInput = document.getElementById('fileInput');
+    const movieInput = document.getElementById('movieInput');
     const unranked = document.getElementById('unranked-area');
     const tiers = document.querySelectorAll('.tier');
 
+    // הוספת סרט לפי שם
+    movieInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const movieName = e.target.value.trim();
+        if (!movieName) return;
+
+        // בונה קישור לתמונה מתוך Google Images (גרסה פשוטה)
+        const query = encodeURIComponent(movieName + ' movie poster');
+        const imageUrl = `https://source.unsplash.com/300x450/?${query}`;
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = movieName;
+        img.classList.add('poster');
+        img.draggable = true;
+        img.dataset.movieName = movieName;
+        img.addEventListener('dragstart', dragStart);
+
+        // מציג את התמונה אחרי טעינה
+        img.onload = () => {
+          unranked.appendChild(img);
+          movieInput.value = ''; // מנקה את השדה
+        };
+
+        img.onerror = () => {
+          alert("לא מצאתי תמונה לסרט הזה 😕 נסה שם אחר.");
+        };
+      }
+    });
+
+    // העלאת תמונות ידניות
     fileInput.addEventListener('change', (event) => {
       const files = event.target.files;
       for (const file of files) {
@@ -338,7 +394,7 @@
           img.src = e.target.result;
           img.classList.add('poster');
           img.draggable = true;
-          img.dataset.originalSrc = e.target.result; // לשמור מקור
+          img.dataset.originalSrc = e.target.result;
           img.addEventListener('dragstart', dragStart);
           unranked.appendChild(img);
         };
@@ -368,15 +424,15 @@
       if (img) unranked.appendChild(img);
     });
 
-    // ✅ כפתור Reset
+    // כפתור Reset
     document.getElementById('resetBtn').addEventListener('click', () => {
       const allPosters = document.querySelectorAll('.poster');
       allPosters.forEach(poster => {
-        unranked.appendChild(poster); // מחזיר הכל לתחתית
+        unranked.appendChild(poster);
       });
     });
 
-    // ✅ כפתור הורדה
+    // כפתור הורדה
     document.getElementById('downloadBtn').addEventListener('click', () => {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
