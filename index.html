@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Movie Tier List</title>
+  <title>🎬 My Movie Tier List</title>
+  <!-- ✅ SEO - שלב 2 כבר כאן! -->
+  <meta name="description" content="צור Tier List אישי לסרטים שלך! גרור סרטים לדירוג SSS עד C, שמור כתמונה ושתף עם חברים.">
+  <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע">
+  <meta name="author" content="טל">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ חשוב למובייל -->
+
   <style>
     body {
       margin: 0;
@@ -120,7 +126,7 @@
       border: 2px solid rgba(150,200,255,0.2);
     }
 
-    /* C - מחולק לשניים */
+    /* C */
     .tier.C {
       background: linear-gradient(135deg, rgba(180,80,180,0.1), transparent);
       border: 2px solid rgba(200,50,50,0.3);
@@ -185,10 +191,12 @@
       backdrop-filter: blur(3px);
     }
 
-    input[type="file"] {
+    input[type="file"],
+    .download-btn,
+    .reset-btn {
       display: block;
-      margin: 30px auto;
-      padding: 14px 28px;
+      margin: 15px auto;
+      padding: 12px 24px;
       background: rgba(40,40,40,0.8);
       color: white;
       border: 2px solid rgba(100,100,100,0.5);
@@ -202,17 +210,37 @@
       transition: all 0.2s ease;
     }
 
-    input[type="file"]:hover {
+    input[type="file"]:hover,
+    .download-btn:hover,
+    .reset-btn:hover {
       background: rgba(50,50,50,0.9);
       border-color: rgba(150,150,150,0.6);
       transform: translateY(-3px);
       box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
+
+    .download-btn {
+      background: rgba(60,60,80,0.7);
+      border-color: rgba(100,100,150,0.4);
+    }
+
+    .download-btn:hover {
+      background: rgba(70,70,100,0.9);
+    }
+
+    .reset-btn {
+      background: rgba(80,40,40,0.7);
+      border-color: rgba(150,80,80,0.4);
+    }
+
+    .reset-btn:hover {
+      background: rgba(100,50,50,0.9);
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎬 Movie Tier List</h1>
+    <h1>🎬 My Movie Tier List</h1>
   </header>
 
   <div class="tier-list">
@@ -275,7 +303,7 @@
     <div class="tier C" data-tier="C">
       <div class="tier-label-container">
         <div class="tier-label-wrapper">
-          <span class="tier-icon">🤔</span>
+          <span class="tier-icon">🗑️</span>
           <div class="tier-label">C</div>
         </div>
         <div class="tier-subtitle">Trash Zone</div>
@@ -288,19 +316,29 @@
 
   <input type="file" id="fileInput" multiple accept="image/*">
 
+  <!-- ✅ כפתור הורדה -->
+  <button id="downloadBtn" class="download-btn">💾 Save as Image</button>
+
+  <!-- ✅ כפתור Reset -->
+  <button id="resetBtn" class="reset-btn">🔄 Reset All</button>
+
   <script>
     const fileInput = document.getElementById('fileInput');
     const unranked = document.getElementById('unranked-area');
+    const tiers = document.querySelectorAll('.tier');
 
     fileInput.addEventListener('change', (event) => {
       const files = event.target.files;
       for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = document.createElement('img');
           img.src = e.target.result;
           img.classList.add('poster');
           img.draggable = true;
+          img.dataset.originalSrc = e.target.result; // לשמור מקור
           img.addEventListener('dragstart', dragStart);
           unranked.appendChild(img);
         };
@@ -312,7 +350,6 @@
       e.dataTransfer.setData('text/plain', e.target.src);
     }
 
-    const tiers = document.querySelectorAll('.tier');
     tiers.forEach(tier => {
       tier.addEventListener('dragover', (e) => e.preventDefault());
       tier.addEventListener('drop', (e) => {
@@ -329,6 +366,36 @@
       const src = e.dataTransfer.getData('text/plain');
       const img = document.querySelector(`img[src='${src}']`);
       if (img) unranked.appendChild(img);
+    });
+
+    // ✅ כפתור Reset
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      const allPosters = document.querySelectorAll('.poster');
+      allPosters.forEach(poster => {
+        unranked.appendChild(poster); // מחזיר הכל לתחתית
+      });
+    });
+
+    // ✅ כפתור הורדה
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      script.onload = () => {
+        const element = document.querySelector('.tier-list').parentNode;
+
+        html2canvas(element, {
+          backgroundColor: '#0a0a0a',
+          scale: 2,
+          useCORS: true,
+          allowTaint: true
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'my-movie-tierlist.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+      };
+      document.head.appendChild(script);
     });
   </script>
 </body>
