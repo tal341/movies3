@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎬 TaL's Movie Universe</title>
+  <title>🎬 TaL's Movie Universe</title> <!-- ✅ שם חדש לאתר בלשונית -->
   <meta name="description" content="צור Tier List אישי לסרטים וסדרות! הקלד שם, גרור לדירוג, שמור כתמונה — פשוט, יפה, חינמי.">
   <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע, סדרות">
   <meta name="author" content="טל">
@@ -17,6 +17,7 @@
     }
     header {
       display: flex;
+      flex-direction: column; /* ✅ עכשיו הכפתורים והכותרת יכולים להיערם */
       justify-content: center;
       align-items: center;
       padding: 25px 10px;
@@ -29,19 +30,19 @@
       font-size: 2.3rem;
       letter-spacing: 1.5px;
       text-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-align: center; /* ✅ ליישר למרכז במובייל */
     }
 
-    /* Made by TaL.S - מודרני, מוצק, מושך */
+    /* Made by TaL.S - עיצוב חדש ומודגש */
     .made-by {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 18px;
+      position: relative; /* ✅ לא absolute יותר - יושב בתוך ה-header */
+      margin-top: 15px; /* ✅ רווח מתחת לכותרת */
+      font-size: 18px; /* ✅ קצת יותר גדול */
       font-weight: 700;
       background: linear-gradient(135deg, #ffdd55, #ffaa00);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 10px rgba(255,221,85,0.6);
+      text-shadow: 0 0 10px rgba(255,221,85,0.6); /* ✅ אפקט זוהר */
       letter-spacing: 1.2px;
       padding: 6px 14px;
       border-radius: 12px;
@@ -49,13 +50,33 @@
       border: 1px solid rgba(255,215,0,0.4);
       transition: all 0.3s ease;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(255, 221, 85, 0.3);
+      z-index: 10;
     }
 
     .made-by:hover {
-      transform: scale(1.05) translateY(-2px);
+      transform: scale(1.05);
       text-shadow: 0 0 15px rgba(255,221,85,0.9);
-      background: linear-gradient(135deg, #ffaa00, #ffdd55);
+    }
+
+    /* Share Button */
+    .share-btn {
+      position: relative; /* ✅ לא absolute יותר - יושב בתוך ה-header */
+      margin-top: 10px; /* ✅ רווח מתחת לכותרת/made-by */
+      background: rgba(40,40,60,0.7);
+      color: #aaa;
+      border: 1px solid rgba(100,100,150,0.4);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s;
+    }
+
+    .share-btn:hover {
+      background: rgba(50,50,80,0.9);
+      color: white;
+      transform: translateY(-2px);
     }
 
     .tier-list {
@@ -83,6 +104,12 @@
     .tier:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    /* ✅ קלאס חדש עבור גרירה במובייל */
+    .drag-over {
+      border: 2px dashed rgba(255, 255, 255, 0.7) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
     }
 
     .tier-label-container {
@@ -201,8 +228,7 @@
     input[type="file"],
     .download-btn,
     .reset-btn,
-    .save-btn,
-    .recommend-btn {
+    .save-btn {
       display: block;
       margin: 15px auto;
       padding: 12px 24px;
@@ -242,15 +268,7 @@
     .save-btn:hover {
       background: rgba(50,80,50,0.9);
     }
-
-    .recommend-btn {
-      background: rgba(60,40,80,0.7);
-      border-color: rgba(150,100,200,0.4);
-    }
-    .recommend-btn:hover {
-      background: rgba(80,50,100,0.9);
-    }
-
+    
     /* שמירה מקומית */
     .saved-lists {
       margin: 30px auto;
@@ -281,48 +299,101 @@
       background: rgba(70,70,70,0.9);
     }
 
-    /* רכיב המלצה */
-    .recommendations {
-      margin: 30px auto;
-      padding: 20px;
-      max-width: 600px;
-      background: rgba(30,30,30,0.6);
-      border-radius: 14px;
-      backdrop-filter: blur(5px);
-      display: none;
-    }
-
-    .recommendations h3 {
-      text-align: center;
-      margin-bottom: 15px;
-      color: #ffdd55;
-    }
-
-    #recommendationsContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .recommend-poster {
-      width: 100px;
-      height: auto;
+    #saveNameInput {
+      display: block;
+      width: 80%;
+      max-width: 300px;
+      margin: 10px auto;
+      padding: 10px;
+      background: rgba(40,40,40,0.8);
+      color: white;
+      border: 1px solid rgba(100,100,100,0.5);
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      cursor: grab;
-      transition: transform 0.2s;
+      text-align: center;
     }
 
-    .recommend-poster:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    /* 📱 התאמות למובייל */
+    @media (max-width: 768px) {
+        header {
+            padding: 15px 10px;
+            gap: 10px; /* רווח בין האלמנטים הנערמים */
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px; /* ✅ רווח קטן יותר */
+        }
+        .made-by {
+            font-size: 16px;
+            padding: 4px 10px;
+            margin-top: 5px; /* ✅ רווח קטן יותר */
+        }
+        .share-btn {
+            font-size: 13px;
+            padding: 5px 10px;
+            margin-top: 5px; /* ✅ רווח קטן יותר */
+        }
+
+        .tier-list {
+            padding: 15px 10px;
+            gap: 15px;
+        }
+        .tier {
+            min-height: 100px; /* גובה מינימלי קטן יותר */
+            padding: 15px;
+            gap: 10px;
+        }
+        .tier-label-container {
+            min-width: 80px; /* שטח תווית קטן יותר */
+        }
+        .tier-label {
+            font-size: 24px; /* גופן קטן יותר */
+        }
+        .tier-subtitle {
+            font-size: 10px;
+        }
+        .poster {
+            width: 100px; /* פוסטרים קטנים יותר */
+            height: auto;
+        }
+        #unranked-area {
+            padding: 15px 10px;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        #unranked-label {
+            font-size: 20px;
+            padding: 10px;
+        }
+        #movieInput,
+        #saveNameInput {
+            width: 90%;
+            max-width: none;
+            font-size: 14px;
+        }
+        input[type="file"],
+        .download-btn,
+        .reset-btn,
+        .save-btn {
+            width: 90%;
+            max-width: none;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        .saved-lists {
+            max-width: none;
+            padding: 15px;
+            margin: 20px auto;
+        }
+        .saved-item {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎬 TaL's Movie Universe</h1>
+    <h1>🎬 My Movie Tier List</h1>
     <button id="shareBtn" class="share-btn" title="Share this page">📤 Share</button>
     <span class="made-by">Made by <strong>TaL.S</strong></span>
   </header>
@@ -344,6 +415,7 @@
 
   <button id="downloadBtn" class="download-btn">💾 Save as Image</button>
   <button id="resetBtn" class="reset-btn">🔄 Reset All</button>
+  <!-- ✅ כפתור ההמלצות הוסר - הוסבר למטה -->
 
   <!-- שמירה מקומית -->
   <div class="saved-lists">
@@ -353,12 +425,6 @@
     <button id="saveListBtn" class="save-btn">💾 Save Current List</button>
   </div>
 
-  <!-- רכיב המלצה -->
-  <div class="recommendations" id="recommendationsBox">
-    <h3>🎬 Similar Movies</h3>
-    <div id="recommendationsContainer"></div>
-  </div>
-
   <script>
     const fileInput = document.getElementById('fileInput');
     const movieInput = document.getElementById('movieInput');
@@ -366,45 +432,7 @@
     const tiers = document.querySelectorAll('.tier');
     const OMDB_API_KEY = "ee77ebb9";
 
-    // 📱 תמיכה בטלפון – גרירה עם אצבע (משופרת)
-    let draggedElement = null;
-    let dragStartX = 0;
-    let dragStartY = 0;
-
-    document.addEventListener('touchstart', e => {
-      const target = e.target.closest('.poster');
-      if (!target) return;
-      draggedElement = target;
-      dragStartX = e.touches[0].clientX;
-      dragStartY = e.touches[0].clientY;
-      draggedElement.style.opacity = '0.7';
-      draggedElement.style.transform = 'scale(1.05)';
-    }, { passive: false });
-
-    document.addEventListener('touchmove', e => {
-      if (!draggedElement) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const diffX = touch.clientX - dragStartX;
-      const diffY = touch.clientY - dragStartY;
-      dragStartX = touch.clientX;
-      dragStartY = touch.clientY;
-    }, { passive: false });
-
-    document.addEventListener('touchend', e => {
-      if (!draggedElement) return;
-      const touch = e.changedTouches[0];
-      const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-      const dropZone = elementBelow?.closest('.tier, #unranked-area');
-      if (dropZone) {
-        dropZone.appendChild(draggedElement);
-      }
-      draggedElement.style.opacity = '';
-      draggedElement.style.transform = '';
-      draggedElement = null;
-    });
-
-    // חיפוש סרט
+    // 🎥 חיפוש סרט/סדרה לפי שם
     movieInput.addEventListener('keypress', async (e) => {
       if (e.key === 'Enter') {
         const movieName = e.target.value.trim();
@@ -413,7 +441,7 @@
           const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(movieName)}&apikey=${OMDB_API_KEY}`);
           const data = await response.json();
           if (data.Response === "False") {
-            alert("לא מצאתי את הסרט/סדרה הזה 😕\nנסה שם אחר או באנגלית.");
+            alert("לא מצאתי את הסרט/סדרה הזה 😕\\nנסה שם אחר או באנגלית.");
             return;
           }
           if (!data.Poster || data.Poster === "N/A") {
@@ -443,7 +471,7 @@
       }
     });
 
-    // העלאת תמונות
+    // העלאת תמונות ידניות
     fileInput.addEventListener('change', (event) => {
       const files = event.target.files;
       for (const file of files) {
@@ -468,17 +496,12 @@
 
     tiers.forEach(tier => {
       tier.addEventListener('dragover', (e) => e.preventDefault());
-      tier.addEventListener('drop', async (e) => {
+      tier.addEventListener('drop', (e) => {
         e.preventDefault();
         const src = e.dataTransfer.getData('text/plain');
         const img = document.querySelector(`img[src='${src}']`);
-        if (img) {
-          tier.appendChild(img);
-          // אם הסרט ב-SSS או SS, מציג את רכיב המלצה
-          if (tier.dataset.tier === 'SSS' || tier.dataset.tier === 'SS') {
-            showRecommendationButton(img);
-          }
-        }
+        if (img) tier.appendChild(img);
+        tier.classList.remove('drag-over'); // מסיר קלאס של גרירה
       });
     });
 
@@ -488,15 +511,16 @@
       const src = e.dataTransfer.getData('text/plain');
       const img = document.querySelector(`img[src='${src}']`);
       if (img) unranked.appendChild(img);
+      unranked.classList.remove('drag-over'); // מסיר קלאס של גרירה
     });
 
-    // Reset
+    // 🔄 Reset
     document.getElementById('resetBtn').addEventListener('click', () => {
       const allPosters = document.querySelectorAll('.poster');
       allPosters.forEach(poster => unranked.appendChild(poster));
     });
 
-    // Download
+    // 💾 Download
     document.getElementById('downloadBtn').addEventListener('click', () => {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
@@ -517,53 +541,88 @@
       document.head.appendChild(script);
     });
 
-    // 🔁 שמירה מקומית
+    // 🔁 שמירה מקומית (Local Storage)
     function saveCurrentList() {
       const name = document.getElementById('saveNameInput').value.trim();
       if (!name) {
         alert("אנא תן שם לרשימה שלך.");
         return;
       }
-      const posters = Array.from(document.querySelectorAll('.poster')).map(img => ({
+      const listData = {};
+      tiers.forEach(tier => {
+        const tierId = tier.dataset.tier;
+        listData[tierId] = Array.from(tier.querySelectorAll('.poster')).map(img => ({
+          src: img.src,
+          title: img.title || img.alt || ''
+        }));
+      });
+      listData['unranked'] = Array.from(unranked.querySelectorAll('.poster')).map(img => ({
         src: img.src,
         title: img.title || img.alt || ''
       }));
-      const list = { name, posters, timestamp: Date.now() };
-      const saved = JSON.parse(localStorage.getItem('movieTierLists') || '[]');
-      saved.push(list);
+
+      const saved = JSON.parse(localStorage.getItem('movieTierLists') || '{}');
+      saved[name] = listData;
       localStorage.setItem('movieTierLists', JSON.stringify(saved));
       loadSavedLists();
       document.getElementById('saveNameInput').value = '';
+      alert(`הרשימה '${name}' נשמרה בהצלחה!`);
     }
 
     function loadSavedLists() {
       const container = document.getElementById('savedListContainer');
       container.innerHTML = '';
-      const saved = JSON.parse(localStorage.getItem('movieTierLists') || '[]');
-      saved.forEach((list, index) => {
+      const saved = JSON.parse(localStorage.getItem('movieTierLists') || '{}');
+      for (const name in saved) {
         const div = document.createElement('div');
         div.className = 'saved-item';
-        div.textContent = list.name;
-        div.onclick = () => restoreList(list);
+        div.textContent = name;
+        div.onclick = () => restoreList(name);
         container.appendChild(div);
-      });
+      }
     }
 
-    function restoreList(list) {
-      // מנקה הכל
-      document.querySelectorAll('.poster').forEach(el => el.remove());
-      unranked.innerHTML = '';
-      // שוחזר את התמונות
-      list.posters.forEach(poster => {
-        const img = document.createElement('img');
-        img.src = poster.src;
-        img.alt = poster.title;
-        img.title = poster.title;
-        img.classList.add('poster');
-        img.draggable = true;
-        img.addEventListener('dragstart', dragStart);
-        unranked.appendChild(img);
-      });
+    function restoreList(name) {
+        const saved = JSON.parse(localStorage.getItem('movieTierLists') || '{}');
+        const listData = saved[name];
+        if (!listData) return;
+
+        // מנקה את כל ה-Tiers ואת ה-Unranked
+        document.querySelectorAll('.poster').forEach(el => el.remove());
+        unranked.innerHTML = '';
+
+        // שחזר את התמונות לכל Tier
+        tiers.forEach(tier => {
+            const tierId = tier.dataset.tier;
+            const tierContent = tier.querySelector('.tier-label-container') ? tier.querySelector('.tier-label-container').nextElementSibling : tier; // Find the content div
+            if (tierContent && listData[tierId]) {
+                listData[tierId].forEach(posterData => {
+                    const img = document.createElement('img');
+                    img.src = posterData.src;
+                    img.alt = posterData.title;
+                    img.title = posterData.title;
+                    img.classList.add('poster');
+                    img.draggable = true;
+                    img.addEventListener('dragstart', dragStart);
+                    tierContent.appendChild(img);
+                });
+            }
+        });
+
+        // שחזר את התמונות לאזור ה-Unranked
+        if (listData['unranked']) {
+            listData['unranked'].forEach(posterData => {
+                const img = document.createElement('img');
+                img.src = posterData.src;
+                img.alt = posterData.title;
+                img.title = posterData.title;
+                img.classList.add('poster');
+                img.draggable = true;
+                img.addEventListener('dragstart', dragStart);
+                unranked.appendChild(img);
+            });
+        }
+        alert(`הרשימה '${name}' נטענה בהצלחה!`);
     }
 
     document.getElementById('saveListBtn').addEventListener('click', saveCurrentList);
@@ -574,8 +633,8 @@
       if (navigator.share) {
         try {
           await navigator.share({
-            title: 'TaL\'s Movie Universe',
-            text: 'בדוק את אתר ה-Tier List האולטימטיבי שלי! 🎬',
+            title: 'My Movie Tier List by TaL.S',
+            text: 'בדוק איזה סרטים אני שם ב-SSS 😎',
             url: window.location.href
           });
         } catch (err) {
@@ -593,71 +652,83 @@
       dummy.select();
       document.execCommand('copy');
       document.body.removeChild(dummy);
-      alert("הקישור הועתק! 🎬\nשלח לחבר שלך בצאט.");
+      alert("הקישור הועתק! 🎬\\nשלח לחבר שלך בצאט.");
     }
 
-    // 🎬 רכיב המלצה
-    function showRecommendationButton(img) {
-      const recommendationsBox = document.getElementById('recommendationsBox');
-      recommendationsBox.style.display = 'block';
-      
-      const btn = document.createElement('button');
-      btn.className = 'recommend-btn';
-      btn.textContent = '🎬 Get Similar Movies';
-      btn.onclick = () => getSimilarMovies(img);
-      
-      // מנקה את הרכיב הקודם
-      const recommendationsContainer = document.getElementById('recommendationsContainer');
-      recommendationsContainer.innerHTML = '';
-      recommendationsContainer.appendChild(btn);
-    }
+    // 📱 תמיכה בטלפון – גרירה עם אצבע
+    let draggedElement = null;
+    let currentDropZone = null;
 
-    function getSimilarMovies(img) {
-      const title = img.dataset.movieTitle;
-      if (!title) return;
-      
-      // בודק אם הסרט כבר ב-SSS/SS
-      const isHighTier = Array.from(tiers).some(tier => 
-        tier.querySelector(`img[src='${img.src}']`)
-      );
-      
-      if (!isHighTier) {
-        alert("ההמלצה תופעל רק עבור סרטים ב-SSS או SS!");
-        return;
-      }
-      
-      // מבקש את הפרטים של הסרט
-      fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.Response === 'True' && data.Genre) {
-            // מבקש סרטים באותו ז'אנר
-            const genre = data.Genre.split(',')[0].trim();
-            fetch(`https://www.omdbapi.com/?s=${genre}&type=movie&apikey=${OMDB_API_KEY}`)
-              .then(res => res.json())
-              .then(searchData => {
-                if (searchData.Response === 'True') {
-                  displayRecommendations(searchData.Search);
-                }
-              });
-          }
-        });
-    }
+    document.addEventListener('touchstart', e => {
+        const target = e.target.closest('.poster');
+        if (!target) return;
+        
+        draggedElement = target;
+        draggedElement.style.opacity = '0.7';
+        draggedElement.style.position = 'absolute';
+        draggedElement.style.zIndex = '1000';
+        document.body.appendChild(draggedElement); // מעביר אותו ל-body כדי שיהיה חופשי לתנועה
 
-    function displayRecommendations(movies) {
-      const container = document.getElementById('recommendationsContainer');
-      container.innerHTML = '';
-      
-      movies.slice(0, 8).forEach(movie => {
-        const img = document.createElement('img');
-        img.src = movie.Poster || 'https://via.placeholder.com/100x150?text=No+Poster';
-        img.alt = movie.Title;
-        img.classList.add('recommend-poster');
-        img.draggable = true;
-        img.addEventListener('dragstart', dragStart);
-        container.appendChild(img);
-      });
-    }
+        // מיקום התחלתי
+        const touch = e.touches[0];
+        draggedElement.style.left = `${touch.clientX - draggedElement.offsetWidth / 2}px`;
+        draggedElement.style.top = `${touch.clientY - draggedElement.offsetHeight / 2}px`;
+
+        // הוספת Class ל-body כדי למנוע גלילה בנגיעה
+        document.body.classList.add('no-scroll');
+    }, { passive: false });
+
+    document.addEventListener('touchmove', e => {
+        if (!draggedElement) return;
+        e.preventDefault(); // מונע גלילה
+        const touch = e.touches[0];
+        
+        draggedElement.style.left = `${touch.clientX - draggedElement.offsetWidth / 2}px`;
+        draggedElement.style.top = `${touch.clientY - draggedElement.offsetHeight / 2}px`;
+
+        // סימון אזור היעד
+        if (currentDropZone) currentDropZone.classList.remove('drag-over');
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const newDropZone = elementBelow?.closest('.tier, #unranked-area');
+        if (newDropZone) {
+            newDropZone.classList.add('drag-over');
+            currentDropZone = newDropZone;
+        } else {
+            currentDropZone = null;
+        }
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+        if (!draggedElement) return;
+        
+        const touch = e.changedTouches[0];
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const dropZone = elementBelow?.closest('.tier, #unranked-area');
+
+        if (dropZone) {
+            // החזרת האלמנט הנגרר למקום הנכון ב-DOM
+            if (dropZone.classList.contains('tier')) {
+                 // מוצא את ה-tier-content הנכון בתוך ה-tier
+                 const tierContent = dropZone.querySelector('.tier-label-container') ? dropZone.querySelector('.tier-label-container').nextElementSibling : dropZone;
+                 if (tierContent) tierContent.appendChild(draggedElement);
+            } else { // unranked-area
+                dropZone.appendChild(draggedElement);
+            }
+            dropZone.classList.remove('drag-over');
+        } else {
+            // אם לא שוחרר מעל אזור יעד, מחזירים אותו לאזור הלא מדורג
+            unranked.appendChild(draggedElement);
+        }
+
+        draggedElement.style.opacity = '';
+        draggedElement.style.position = ''; // הסרת מיקום אבסולוטי
+        draggedElement.style.zIndex = '';
+        draggedElement = null;
+        if (currentDropZone) currentDropZone.classList.remove('drag-over');
+        currentDropZone = null;
+        document.body.classList.remove('no-scroll');
+    });
+
   </script>
 </body>
 </html>
