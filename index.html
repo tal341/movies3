@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎬 My Movie Tier List</title>
+  <title>🎬 TaL's Movie Universe</title>
   <meta name="description" content="צור Tier List אישי לסרטים וסדרות! הקלד שם, גרור לדירוג, שמור כתמונה — פשוט, יפה, חינמי.">
   <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע, סדרות">
   <meta name="author" content="טל">
@@ -31,47 +31,31 @@
       text-shadow: 0 0 10px rgba(255,255,255,0.2);
     }
 
-    /* Made by TaL.S */
+    /* Made by TaL.S - מודרני, מוצק, מושך */
     .made-by {
       position: absolute;
       top: 15px;
       right: 20px;
-      font-size: 14px;
-      opacity: 0.7;
-      letter-spacing: 0.5px;
-      background: rgba(30,30,30,0.6);
-      padding: 4px 12px;
-      border-radius: 20px;
-      backdrop-filter: blur(2px);
-      z-index: 10;
-    }
-
-    .made-by strong {
-      color: #ffdd55;
-      font-weight: bold;
-      text-shadow: 0 0 4px rgba(255,221,85,0.5);
-    }
-
-    /* Share Button */
-    .share-btn {
-      position: absolute;
-      top: 15px;
-      left: 20px;
-      background: rgba(40,40,60,0.7);
-      color: #aaa;
-      border: 1px solid rgba(100,100,150,0.4);
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffdd55, #ffaa00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255,221,85,0.6);
+      letter-spacing: 1.2px;
+      padding: 6px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,215,0,0.4);
+      transition: all 0.3s ease;
       cursor: pointer;
-      backdrop-filter: blur(2px);
-      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 221, 85, 0.3);
     }
 
-    .share-btn:hover {
-      background: rgba(50,50,80,0.9);
-      color: white;
-      transform: translateY(-2px);
+    .made-by:hover {
+      transform: scale(1.05) translateY(-2px);
+      text-shadow: 0 0 15px rgba(255,221,85,0.9);
+      background: linear-gradient(135deg, #ffaa00, #ffdd55);
     }
 
     .tier-list {
@@ -217,7 +201,8 @@
     input[type="file"],
     .download-btn,
     .reset-btn,
-    .save-btn {
+    .save-btn,
+    .recommend-btn {
       display: block;
       margin: 15px auto;
       padding: 12px 24px;
@@ -258,6 +243,14 @@
       background: rgba(50,80,50,0.9);
     }
 
+    .recommend-btn {
+      background: rgba(60,40,80,0.7);
+      border-color: rgba(150,100,200,0.4);
+    }
+    .recommend-btn:hover {
+      background: rgba(80,50,100,0.9);
+    }
+
     /* שמירה מקומית */
     .saved-lists {
       margin: 30px auto;
@@ -288,23 +281,48 @@
       background: rgba(70,70,70,0.9);
     }
 
-    #saveNameInput {
-      display: block;
-      width: 80%;
-      max-width: 300px;
-      margin: 10px auto;
-      padding: 10px;
-      background: rgba(40,40,40,0.8);
-      color: white;
-      border: 1px solid rgba(100,100,100,0.5);
-      border-radius: 8px;
+    /* רכיב המלצה */
+    .recommendations {
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 600px;
+      background: rgba(30,30,30,0.6);
+      border-radius: 14px;
+      backdrop-filter: blur(5px);
+      display: none;
+    }
+
+    .recommendations h3 {
       text-align: center;
+      margin-bottom: 15px;
+      color: #ffdd55;
+    }
+
+    #recommendationsContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .recommend-poster {
+      width: 100px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      cursor: grab;
+      transition: transform 0.2s;
+    }
+
+    .recommend-poster:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>🎬 My Movie Tier List</h1>
+    <h1>🎬 TaL's Movie Universe</h1>
     <button id="shareBtn" class="share-btn" title="Share this page">📤 Share</button>
     <span class="made-by">Made by <strong>TaL.S</strong></span>
   </header>
@@ -335,12 +353,56 @@
     <button id="saveListBtn" class="save-btn">💾 Save Current List</button>
   </div>
 
+  <!-- רכיב המלצה -->
+  <div class="recommendations" id="recommendationsBox">
+    <h3>🎬 Similar Movies</h3>
+    <div id="recommendationsContainer"></div>
+  </div>
+
   <script>
     const fileInput = document.getElementById('fileInput');
     const movieInput = document.getElementById('movieInput');
     const unranked = document.getElementById('unranked-area');
     const tiers = document.querySelectorAll('.tier');
     const OMDB_API_KEY = "ee77ebb9";
+
+    // 📱 תמיכה בטלפון – גרירה עם אצבע (משופרת)
+    let draggedElement = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    document.addEventListener('touchstart', e => {
+      const target = e.target.closest('.poster');
+      if (!target) return;
+      draggedElement = target;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      draggedElement.style.opacity = '0.7';
+      draggedElement.style.transform = 'scale(1.05)';
+    }, { passive: false });
+
+    document.addEventListener('touchmove', e => {
+      if (!draggedElement) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const diffX = touch.clientX - dragStartX;
+      const diffY = touch.clientY - dragStartY;
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+      if (!draggedElement) return;
+      const touch = e.changedTouches[0];
+      const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = elementBelow?.closest('.tier, #unranked-area');
+      if (dropZone) {
+        dropZone.appendChild(draggedElement);
+      }
+      draggedElement.style.opacity = '';
+      draggedElement.style.transform = '';
+      draggedElement = null;
+    });
 
     // חיפוש סרט
     movieInput.addEventListener('keypress', async (e) => {
@@ -406,11 +468,17 @@
 
     tiers.forEach(tier => {
       tier.addEventListener('dragover', (e) => e.preventDefault());
-      tier.addEventListener('drop', (e) => {
+      tier.addEventListener('drop', async (e) => {
         e.preventDefault();
         const src = e.dataTransfer.getData('text/plain');
         const img = document.querySelector(`img[src='${src}']`);
-        if (img) tier.appendChild(img);
+        if (img) {
+          tier.appendChild(img);
+          // אם הסרט ב-SSS או SS, מציג את רכיב המלצה
+          if (tier.dataset.tier === 'SSS' || tier.dataset.tier === 'SS') {
+            showRecommendationButton(img);
+          }
+        }
       });
     });
 
@@ -506,8 +574,8 @@
       if (navigator.share) {
         try {
           await navigator.share({
-            title: 'My Movie Tier List by TaL.S',
-            text: 'בדוק איזה סרטים אני שם ב-SSS 😎',
+            title: 'TaL\'s Movie Universe',
+            text: 'בדוק את אתר ה-Tier List האולטימטיבי שלי! 🎬',
             url: window.location.href
           });
         } catch (err) {
@@ -526,6 +594,69 @@
       document.execCommand('copy');
       document.body.removeChild(dummy);
       alert("הקישור הועתק! 🎬\nשלח לחבר שלך בצאט.");
+    }
+
+    // 🎬 רכיב המלצה
+    function showRecommendationButton(img) {
+      const recommendationsBox = document.getElementById('recommendationsBox');
+      recommendationsBox.style.display = 'block';
+      
+      const btn = document.createElement('button');
+      btn.className = 'recommend-btn';
+      btn.textContent = '🎬 Get Similar Movies';
+      btn.onclick = () => getSimilarMovies(img);
+      
+      // מנקה את הרכיב הקודם
+      const recommendationsContainer = document.getElementById('recommendationsContainer');
+      recommendationsContainer.innerHTML = '';
+      recommendationsContainer.appendChild(btn);
+    }
+
+    function getSimilarMovies(img) {
+      const title = img.dataset.movieTitle;
+      if (!title) return;
+      
+      // בודק אם הסרט כבר ב-SSS/SS
+      const isHighTier = Array.from(tiers).some(tier => 
+        tier.querySelector(`img[src='${img.src}']`)
+      );
+      
+      if (!isHighTier) {
+        alert("ההמלצה תופעל רק עבור סרטים ב-SSS או SS!");
+        return;
+      }
+      
+      // מבקש את הפרטים של הסרט
+      fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.Response === 'True' && data.Genre) {
+            // מבקש סרטים באותו ז'אנר
+            const genre = data.Genre.split(',')[0].trim();
+            fetch(`https://www.omdbapi.com/?s=${genre}&type=movie&apikey=${OMDB_API_KEY}`)
+              .then(res => res.json())
+              .then(searchData => {
+                if (searchData.Response === 'True') {
+                  displayRecommendations(searchData.Search);
+                }
+              });
+          }
+        });
+    }
+
+    function displayRecommendations(movies) {
+      const container = document.getElementById('recommendationsContainer');
+      container.innerHTML = '';
+      
+      movies.slice(0, 8).forEach(movie => {
+        const img = document.createElement('img');
+        img.src = movie.Poster || 'https://via.placeholder.com/100x150?text=No+Poster';
+        img.alt = movie.Title;
+        img.classList.add('recommend-poster');
+        img.draggable = true;
+        img.addEventListener('dragstart', dragStart);
+        container.appendChild(img);
+      });
     }
   </script>
 </body>
