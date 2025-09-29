@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🎬 TaL's Movie Universe</title> <!-- ✅ שם חדש לאתר בלשונית -->
-  <meta name="description" content="צור Tier List אישי לסרטים וסדרות! הקלד שם, גרור לדירוג, שמור כתמונה — פשוט, יפה, חינמי.">
-  <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע, סדרות">
+  <title>🎬 TaL TierList Maker</title> <!-- ✅ שם חדש לאתר בלשונית -->
+  <meta name="description" content="צור Tier List אישי לסרטים וסדרות! הקלד שם, גרור/לחץ לדירוג, שמור כתמונה — פשוט, יפה, חינמי.">
+  <meta name="keywords" content="movie tier list, rate movies, film ranking, SSS tier, סרטים, דירוג סרטים, טירליסט, סרטי קולנוע, סדרות, TaL TierList Maker">
   <meta name="author" content="טל">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -17,7 +17,6 @@
     }
     header {
       display: flex;
-      flex-direction: column; /* ✅ עכשיו הכפתורים והכותרת יכולים להיערם */
       justify-content: center;
       align-items: center;
       padding: 25px 10px;
@@ -30,13 +29,13 @@
       font-size: 2.3rem;
       letter-spacing: 1.5px;
       text-shadow: 0 0 10px rgba(255,255,255,0.2);
-      text-align: center; /* ✅ ליישר למרכז במובייל */
     }
 
     /* Made by TaL.S - עיצוב חדש ומודגש */
     .made-by {
-      position: relative; /* ✅ לא absolute יותר - יושב בתוך ה-header */
-      margin-top: 15px; /* ✅ רווח מתחת לכותרת */
+      position: absolute;
+      top: 15px;
+      right: 20px;
       font-size: 18px; /* ✅ קצת יותר גדול */
       font-weight: 700;
       background: linear-gradient(135deg, #ffdd55, #ffaa00);
@@ -60,8 +59,9 @@
 
     /* Share Button */
     .share-btn {
-      position: relative; /* ✅ לא absolute יותר - יושב בתוך ה-header */
-      margin-top: 10px; /* ✅ רווח מתחת לכותרת/made-by */
+      position: absolute;
+      top: 15px;
+      left: 20px;
       background: rgba(40,40,60,0.7);
       color: #aaa;
       border: 1px solid rgba(100,100,150,0.4);
@@ -75,6 +75,27 @@
 
     .share-btn:hover {
       background: rgba(50,50,80,0.9);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Settings Button */
+    .settings-btn { /* ✅ כפתור חדש */
+      position: absolute;
+      bottom: 15px;
+      right: 20px;
+      background: rgba(60,40,60,0.7);
+      color: #aaa;
+      border: 1px solid rgba(100,100,150,0.4);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s;
+    }
+    .settings-btn:hover {
+      background: rgba(80,50,80,0.9);
       color: white;
       transform: translateY(-2px);
     }
@@ -105,8 +126,15 @@
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
+    
+    .tier-content-area { /* ✅ קונטיינר מפורש לפוסטרים בתוך כל Tier */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      flex-grow: 1; /* כדי שיתפוס את כל הרוחב הזמין */
+    }
 
-    /* ✅ קלאס חדש עבור גרירה במובייל */
+    /* קלאס לגרירה (רק למחשב) */
     .drag-over {
       border: 2px dashed rgba(255, 255, 255, 0.7) !important;
       background: rgba(255, 255, 255, 0.05) !important;
@@ -163,7 +191,7 @@
       width: 120px;
       height: auto;
       margin: 0;
-      cursor: grab;
+      cursor: grab; /* ✅ עכשיו רק למחשב */
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: transform 0.2s ease;
@@ -173,6 +201,9 @@
     .poster:hover {
       transform: scale(1.04);
       box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    }
+    .poster.dragging { /* ✅ לתמונה הנגררת במחשב */
+        opacity: 0.5;
     }
 
     #unranked-area {
@@ -312,25 +343,170 @@
       text-align: center;
     }
 
+    /* Modals (settings, move-to-tier) */
+    .modal-overlay { /* ✅ חדש: לשכבה הכהה שמאחורי הפופאפים */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 500px;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #ffdd55;
+    }
+    .modal-content p {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #ccc;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      color: white;
+    }
+
+    /* Tier choice buttons in move modal */
+    #tierChoiceButtons button {
+      background: rgba(50,50,50,0.8);
+      color: white;
+      border: 1px solid rgba(100,100,100,0.5);
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    #tierChoiceButtons button:hover {
+      background: rgba(70,70,70,0.9);
+    }
+
+    /* Settings Toggle */
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: rgba(40,40,40,0.8);
+        border-radius: 8px;
+    }
+    .setting-item label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 25px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #555;
+        transition: .4s;
+        border-radius: 25px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 17px;
+        width: 17px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+
+
     /* 📱 התאמות למובייל */
     @media (max-width: 768px) {
         header {
+            flex-direction: column; /* ✅ הכפתורים והכותרת נערמים */
             padding: 15px 10px;
             gap: 10px; /* רווח בין האלמנטים הנערמים */
         }
         h1 {
             font-size: 1.8rem;
             margin-bottom: 5px; /* ✅ רווח קטן יותר */
+            order: 2; /* ✅ יופיע שני בטור */
         }
         .made-by {
             font-size: 16px;
             padding: 4px 10px;
             margin-top: 5px; /* ✅ רווח קטן יותר */
+            position: relative; /* ✅ במובייל יהיה בתוך הזרם */
+            order: 3; /* ✅ יופיע שלישי בטור */
+            right: auto; left: auto; top: auto; /* מאפס מיקום אבסולוטי */
         }
         .share-btn {
             font-size: 13px;
             padding: 5px 10px;
             margin-top: 5px; /* ✅ רווח קטן יותר */
+            position: relative; /* ✅ במובייל יהיה בתוך הזרם */
+            order: 1; /* ✅ יופיע ראשון בטור */
+            right: auto; left: auto; top: auto; /* מאפס מיקום אבסולוטי */
+        }
+        .settings-btn { /* ✅ כפתור הגדרות במובייל */
+            font-size: 13px;
+            padding: 5px 10px;
+            margin-top: 5px;
+            position: relative;
+            order: 4; /* ✅ יופיע רביעי בטור */
+            right: auto; left: auto; top: auto;
+            margin-bottom: 0; /* מונע רווח מיותר בתחתית ההדר */
         }
 
         .tier-list {
@@ -354,6 +530,7 @@
         .poster {
             width: 100px; /* פוסטרים קטנים יותר */
             height: auto;
+            cursor: pointer; /* ✅ במובייל קליק */
         }
         #unranked-area {
             padding: 15px 10px;
@@ -393,18 +570,37 @@
 </head>
 <body>
   <header>
-    <h1>🎬 My Movie Tier List</h1>
     <button id="shareBtn" class="share-btn" title="Share this page">📤 Share</button>
+    <h1>🎬 My Movie Tier List</h1>
     <span class="made-by">Made by <strong>TaL.S</strong></span>
+    <button id="settingsBtn" class="settings-btn" title="Settings">⚙️ Settings</button> <!-- ✅ כפתור הגדרות חדש -->
   </header>
 
   <div class="tier-list">
-    <div class="tier SSS" data-tier="SSS"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">🏆</span><div class="tier-label">SSS</div></div><div class="tier-subtitle">TOP!</div></div></div>
-    <div class="tier SS" data-tier="SS"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">⭐</span><div class="tier-label">SS</div></div><div class="tier-subtitle">Excellent</div></div></div>
-    <div class="tier S" data-tier="S"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">👍</span><div class="tier-label">S</div></div><div class="tier-subtitle">Great</div></div></div>
-    <div class="tier Ap" data-tier="A+"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">✅</span><div class="tier-label">A+</div></div><div class="tier-subtitle">Good</div></div></div>
-    <div class="tier B" data-tier="B"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">😐</span><div class="tier-label">B</div></div><div class="tier-subtitle">Okay</div></div></div>
-    <div class="tier C" data-tier="C"><div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">🗑️</span><div class="tier-label">C</div></div><div class="tier-subtitle">Trash Zone</div></div></div>
+    <div class="tier SSS" data-tier="SSS">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">🏆</span><div class="tier-label">SSS</div></div><div class="tier-subtitle">TOP!</div></div>
+      <div class="tier-content-area"></div> <!-- ✅ קונטיינר מפורש לפוסטרים -->
+    </div>
+    <div class="tier SS" data-tier="SS">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">⭐</span><div class="tier-label">SS</div></div><div class="tier-subtitle">Excellent</div></div>
+      <div class="tier-content-area"></div>
+    </div>
+    <div class="tier S" data-tier="S">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">👍</span><div class="tier-label">S</div></div><div class="tier-subtitle">Great</div></div>
+      <div class="tier-content-area"></div>
+    </div>
+    <div class="tier Ap" data-tier="A+">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">✅</span><div class="tier-label">A+</div></div><div class="tier-subtitle">Good</div></div>
+      <div class="tier-content-area"></div>
+    </div>
+    <div class="tier B" data-tier="B">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">😐</span><div class="tier-label">B</div></div><div class="tier-subtitle">Okay</div></div>
+      <div class="tier-content-area"></div>
+    </div>
+    <div class="tier C" data-tier="C">
+      <div class="tier-label-container"><div class="tier-label-wrapper"><span class="tier-icon">🗑️</span><div class="tier-label">C</div></div><div class="tier-subtitle">Trash Zone</div></div>
+      <div class="tier-content-area"></div>
+    </div>
   </div>
 
   <div id="unranked-label">🎬 Movies & Series</div>
@@ -415,7 +611,6 @@
 
   <button id="downloadBtn" class="download-btn">💾 Save as Image</button>
   <button id="resetBtn" class="reset-btn">🔄 Reset All</button>
-  <!-- ✅ כפתור ההמלצות הוסר - הוסבר למטה -->
 
   <!-- שמירה מקומית -->
   <div class="saved-lists">
@@ -425,13 +620,79 @@
     <button id="saveListBtn" class="save-btn">💾 Save Current List</button>
   </div>
 
+  <!-- ✅ Modal for moving poster (mobile) -->
+  <div id="moveToTierModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="hideMoveToTierModal()">✖️</button>
+      <h3>Move Movie To:</h3>
+      <div id="tierChoiceButtons">
+        <button data-tier-id="SSS">SSS</button>
+        <button data-tier-id="SS">SS</button>
+        <button data-tier-id="S">S</button>
+        <button data-tier-id="A+">A+</button>
+        <button data-tier-id="B">B</button>
+        <button data-tier-id="C">C</button>
+        <button data-tier-id="unranked">Unranked</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Modal for Settings/About -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="hideSettingsModal()">✖️</button>
+      <h3>⚙️ Settings & Help</h3>
+      <div class="setting-item">
+          <label for="dragAndDropToggle">Use Drag & Drop (Desktop only):</label>
+          <label class="switch">
+              <input type="checkbox" id="dragAndDropToggle" checked>
+              <span class="slider round"></span>
+          </label>
+      </div>
+      <hr style="border-color: rgba(100,100,100,0.3); margin: 20px 0;">
+      <h3>❓ How to Use</h3>
+      <p style="text-align: left;">
+          This is your personal Movie Tier List Maker!
+          <br><br>
+          <strong>On Desktop:</strong>
+          <br>
+          1. Use the text field to search for movies/series.
+          <br>
+          2. Drag & Drop posters between Tiers (SSS to C) or to the "Movies & Series" area below.
+          <br>
+          3. Upload your own images using "Choose Files".
+          <br>
+          4. "Save as Image" to download your finished list.
+          <br>
+          5. "Save Current List" to save your progress in the browser.
+          <br><br>
+          <strong>On Mobile:</strong>
+          <br>
+          1. Tap on a poster to move it to a different Tier.
+          <br>
+          2. All other functions (search, upload, save, reset) work the same.
+          <br><br>
+          Made with ❤️ by TaL.S
+      </p>
+    </div>
+  </div>
+
+
   <script>
     const fileInput = document.getElementById('fileInput');
     const movieInput = document.getElementById('movieInput');
     const unranked = document.getElementById('unranked-area');
     const tiers = document.querySelectorAll('.tier');
     const OMDB_API_KEY = "ee77ebb9";
+    const settingsModal = document.getElementById('settingsModal');
+    const moveToTierModal = document.getElementById('moveToTierModal');
+    const tierChoiceButtonsContainer = document.getElementById('tierChoiceButtons');
+    const dragAndDropToggle = document.getElementById('dragAndDropToggle');
 
+    let currentClickedPoster = null; // ✅ לשמור את הפוסטר שנלחץ עליו במובייל
+    let isMobile = window.innerWidth <= 768; // ✅ מזהה אם זה מובייל
+
+    // 🔑 מפתח API שלך — כבר מוכנס!
     // 🎥 חיפוש סרט/סדרה לפי שם
     movieInput.addEventListener('keypress', async (e) => {
       if (e.key === 'Enter') {
@@ -453,9 +714,10 @@
           img.alt = data.Title;
           img.title = `${data.Title} (${data.Year}) • ${data.Type}`;
           img.classList.add('poster');
-          img.draggable = true;
+          img.draggable = !isMobile && dragAndDropToggle.checked; // ✅ גרירה רק במחשב או אם הופעל
           img.dataset.movieTitle = data.Title;
           img.addEventListener('dragstart', dragStart);
+          img.addEventListener('click', handlePosterClick); // ✅ לחיצה במובייל
           img.onload = () => {
             unranked.appendChild(img);
             movieInput.value = '';
@@ -481,38 +743,59 @@
           const img = document.createElement('img');
           img.src = e.target.result;
           img.classList.add('poster');
-          img.draggable = true;
+          img.draggable = !isMobile && dragAndDropToggle.checked; // ✅ גרירה רק במחשב או אם הופעל
           img.dataset.originalSrc = e.target.result;
           img.addEventListener('dragstart', dragStart);
+          img.addEventListener('click', handlePosterClick); // ✅ לחיצה במובייל
           unranked.appendChild(img);
         };
         reader.readAsDataURL(file);
       }
     });
 
+    // ✅ פונקציות גרירה - עובדות רק אם הפעיל במחשב
     function dragStart(e) {
-      e.dataTransfer.setData('text/plain', e.target.src);
+      if (!isMobile && dragAndDropToggle.checked) {
+        e.dataTransfer.setData('text/plain', e.target.src);
+        e.target.classList.add('dragging'); // סימון התמונה הנגררת
+      } else {
+        e.preventDefault(); // מונע גרירה אם לא במצב גרירה
+      }
     }
 
     tiers.forEach(tier => {
-      tier.addEventListener('dragover', (e) => e.preventDefault());
-      tier.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const src = e.dataTransfer.getData('text/plain');
-        const img = document.querySelector(`img[src='${src}']`);
-        if (img) tier.appendChild(img);
-        tier.classList.remove('drag-over'); // מסיר קלאס של גרירה
+      const contentArea = tier.querySelector('.tier-content-area');
+      contentArea.addEventListener('dragover', (e) => {
+        if (!isMobile && dragAndDropToggle.checked) e.preventDefault();
+      });
+      contentArea.addEventListener('drop', (e) => {
+        if (!isMobile && dragAndDropToggle.checked) {
+          e.preventDefault();
+          const src = e.dataTransfer.getData('text/plain');
+          const img = document.querySelector(`img[src='${src}']`);
+          if (img) {
+            contentArea.appendChild(img);
+            img.classList.remove('dragging');
+          }
+        }
       });
     });
 
-    unranked.addEventListener('dragover', (e) => e.preventDefault());
-    unranked.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const src = e.dataTransfer.getData('text/plain');
-      const img = document.querySelector(`img[src='${src}']`);
-      if (img) unranked.appendChild(img);
-      unranked.classList.remove('drag-over'); // מסיר קלאס של גרירה
+    unranked.addEventListener('dragover', (e) => {
+      if (!isMobile && dragAndDropToggle.checked) e.preventDefault();
     });
+    unranked.addEventListener('drop', (e) => {
+      if (!isMobile && dragAndDropToggle.checked) {
+        e.preventDefault();
+        const src = e.dataTransfer.getData('text/plain');
+        const img = document.querySelector(`img[src='${src}']`);
+        if (img) {
+          unranked.appendChild(img);
+          img.classList.remove('dragging');
+        }
+      }
+    });
+
 
     // 🔄 Reset
     document.getElementById('resetBtn').addEventListener('click', () => {
@@ -551,7 +834,8 @@
       const listData = {};
       tiers.forEach(tier => {
         const tierId = tier.dataset.tier;
-        listData[tierId] = Array.from(tier.querySelectorAll('.poster')).map(img => ({
+        const contentArea = tier.querySelector('.tier-content-area');
+        listData[tierId] = Array.from(contentArea.querySelectorAll('.poster')).map(img => ({
           src: img.src,
           title: img.title || img.alt || ''
         }));
@@ -594,17 +878,18 @@
         // שחזר את התמונות לכל Tier
         tiers.forEach(tier => {
             const tierId = tier.dataset.tier;
-            const tierContent = tier.querySelector('.tier-label-container') ? tier.querySelector('.tier-label-container').nextElementSibling : tier; // Find the content div
-            if (tierContent && listData[tierId]) {
+            const contentArea = tier.querySelector('.tier-content-area'); // ✅ וודא שזה ה-content-area הנכון
+            if (contentArea && listData[tierId]) {
                 listData[tierId].forEach(posterData => {
                     const img = document.createElement('img');
                     img.src = posterData.src;
                     img.alt = posterData.title;
                     img.title = posterData.title;
                     img.classList.add('poster');
-                    img.draggable = true;
+                    img.draggable = !isMobile && dragAndDropToggle.checked;
                     img.addEventListener('dragstart', dragStart);
-                    tierContent.appendChild(img);
+                    img.addEventListener('click', handlePosterClick); // ✅ לחיצה במובייל
+                    contentArea.appendChild(img);
                 });
             }
         });
@@ -617,8 +902,9 @@
                 img.alt = posterData.title;
                 img.title = posterData.title;
                 img.classList.add('poster');
-                img.draggable = true;
+                img.draggable = !isMobile && dragAndDropToggle.checked;
                 img.addEventListener('dragstart', dragStart);
+                img.addEventListener('click', handlePosterClick); // ✅ לחיצה במובייל
                 unranked.appendChild(img);
             });
         }
@@ -633,7 +919,7 @@
       if (navigator.share) {
         try {
           await navigator.share({
-            title: 'My Movie Tier List by TaL.S',
+            title: 'TaL TierList Maker', // ✅ שם חדש
             text: 'בדוק איזה סרטים אני שם ב-SSS 😎',
             url: window.location.href
           });
@@ -655,78 +941,79 @@
       alert("הקישור הועתק! 🎬\\nשלח לחבר שלך בצאט.");
     }
 
-    // 📱 תמיכה בטלפון – גרירה עם אצבע
-    let draggedElement = null;
-    let currentDropZone = null;
+    // ✅ פונקציות לחלון קופץ של העברת סרט (למובייל)
+    function showMoveToTierModal(poster) {
+        currentClickedPoster = poster;
+        moveToTierModal.classList.add('active');
+    }
 
-    document.addEventListener('touchstart', e => {
-        const target = e.target.closest('.poster');
-        if (!target) return;
-        
-        draggedElement = target;
-        draggedElement.style.opacity = '0.7';
-        draggedElement.style.position = 'absolute';
-        draggedElement.style.zIndex = '1000';
-        document.body.appendChild(draggedElement); // מעביר אותו ל-body כדי שיהיה חופשי לתנועה
+    function hideMoveToTierModal() {
+        currentClickedPoster = null;
+        moveToTierModal.classList.remove('active');
+    }
 
-        // מיקום התחלתי
-        const touch = e.touches[0];
-        draggedElement.style.left = `${touch.clientX - draggedElement.offsetWidth / 2}px`;
-        draggedElement.style.top = `${touch.clientY - draggedElement.offsetHeight / 2}px`;
-
-        // הוספת Class ל-body כדי למנוע גלילה בנגיעה
-        document.body.classList.add('no-scroll');
-    }, { passive: false });
-
-    document.addEventListener('touchmove', e => {
-        if (!draggedElement) return;
-        e.preventDefault(); // מונע גלילה
-        const touch = e.touches[0];
-        
-        draggedElement.style.left = `${touch.clientX - draggedElement.offsetWidth / 2}px`;
-        draggedElement.style.top = `${touch.clientY - draggedElement.offsetHeight / 2}px`;
-
-        // סימון אזור היעד
-        if (currentDropZone) currentDropZone.classList.remove('drag-over');
-        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-        const newDropZone = elementBelow?.closest('.tier, #unranked-area');
-        if (newDropZone) {
-            newDropZone.classList.add('drag-over');
-            currentDropZone = newDropZone;
-        } else {
-            currentDropZone = null;
-        }
-    }, { passive: false });
-
-    document.addEventListener('touchend', e => {
-        if (!draggedElement) return;
-        
-        const touch = e.changedTouches[0];
-        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-        const dropZone = elementBelow?.closest('.tier, #unranked-area');
-
-        if (dropZone) {
-            // החזרת האלמנט הנגרר למקום הנכון ב-DOM
-            if (dropZone.classList.contains('tier')) {
-                 // מוצא את ה-tier-content הנכון בתוך ה-tier
-                 const tierContent = dropZone.querySelector('.tier-label-container') ? dropZone.querySelector('.tier-label-container').nextElementSibling : dropZone;
-                 if (tierContent) tierContent.appendChild(draggedElement);
-            } else { // unranked-area
-                dropZone.appendChild(draggedElement);
+    tierChoiceButtonsContainer.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentClickedPoster) {
+                const tierId = button.dataset.tierId;
+                let targetContainer;
+                if (tierId === 'unranked') {
+                    targetContainer = unranked;
+                } else {
+                    const tierElement = document.querySelector(`.tier[data-tier="${tierId}"]`);
+                    targetContainer = tierElement.querySelector('.tier-content-area');
+                }
+                if (targetContainer) {
+                    targetContainer.appendChild(currentClickedPoster);
+                }
             }
-            dropZone.classList.remove('drag-over');
-        } else {
-            // אם לא שוחרר מעל אזור יעד, מחזירים אותו לאזור הלא מדורג
-            unranked.appendChild(draggedElement);
-        }
+            hideMoveToTierModal();
+        });
+    });
 
-        draggedElement.style.opacity = '';
-        draggedElement.style.position = ''; // הסרת מיקום אבסולוטי
-        draggedElement.style.zIndex = '';
-        draggedElement = null;
-        if (currentDropZone) currentDropZone.classList.remove('drag-over');
-        currentDropZone = null;
-        document.body.classList.remove('no-scroll');
+    // ✅ לחיצה על פוסטר (בעיקר למובייל)
+    function handlePosterClick(e) {
+        if (isMobile || !dragAndDropToggle.checked) { // אם זה מובייל או שהגרירה כבויה
+            showMoveToTierModal(e.currentTarget);
+        }
+    }
+
+    // ✅ פונקציות לחלון קופץ של הגדרות
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        settingsModal.classList.add('active');
+    });
+
+    function hideSettingsModal() {
+        settingsModal.classList.remove('active');
+    }
+
+    // ✅ לוגיקה למתג (toggle) של גרירה/קליק
+    dragAndDropToggle.addEventListener('change', () => {
+        localStorage.setItem('useDragAndDrop', dragAndDropToggle.checked);
+        // עדכון מצב draggable לכל הפוסטרים הקיימים
+        document.querySelectorAll('.poster').forEach(poster => {
+            poster.draggable = dragAndDropToggle.checked;
+        });
+    });
+
+    // טוען את הגדרת הגרירה השמורה, ברירת מחדל היא דלוקה
+    const savedDragAndDropSetting = localStorage.getItem('useDragAndDrop');
+    if (savedDragAndDropSetting !== null) {
+        dragAndDropToggle.checked = JSON.parse(savedDragAndDropSetting);
+    }
+
+    // מתאים את מצב ה-draggable של כל הפוסטרים בטעינה
+    document.querySelectorAll('.poster').forEach(poster => {
+        poster.draggable = !isMobile && dragAndDropToggle.checked;
+    });
+
+    // ✅ זיהוי שינוי גודל חלון - אם עוברים ממובייל לדסקטופ או הפוך
+    window.addEventListener('resize', () => {
+        isMobile = window.innerWidth <= 768;
+        // עדכון מצב draggable לכל הפוסטרים הקיימים
+        document.querySelectorAll('.poster').forEach(poster => {
+            poster.draggable = !isMobile && dragAndDropToggle.checked;
+        });
     });
 
   </script>
